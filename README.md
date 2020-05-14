@@ -6,13 +6,13 @@ Built during COVID-19 lockdown in my base.
 
 No CSS, Javascript Import. All embedded in One HTML File.
 
+### 🚚 Super Fast Code Shipping
+
+Loading Single HTML File... and Done!
+
 ### 🛒 No Dependency
 
 Full Vanilia Javascript
-
-### 🚚 Super Fast Code Shipping
-
-Accessing.. Loading Single HTML File... and Done!
 
 ### 😈 I Gave up Maintenance
 

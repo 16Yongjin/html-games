@@ -1,0 +1,440 @@
+<html>
+
+<head>
+    <title>일정관리</title>
+    <meta charset="utf-8" />
+    <style>
+        :root {
+            --background: white;
+            --board-background: #eee;
+            --card-background: white;
+            --border-color: #eee;
+            --font-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            color: var(--font-color);
+        }
+
+        body {
+            position: relative;
+            max-height: 100vh;
+            margin: 0;
+            overflow-y: hidden;
+            background: var(--background);
+            transition: 0.3s;
+        }
+
+        header {
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem;
+            height: 5rem;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+        }
+
+        .dark-mode {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 1.5rem;
+            margin: 1.5rem;
+            height: 3rem;
+        }
+
+        #dark-mode {
+            width: 1.5rem;
+            height: 1.5rem;
+            color: white;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 5rem);
+            padding: 1rem 0.5rem;
+            overflow-x: auto;
+            overflow-y: hidden;
+            align-items: flex-start;
+
+        }
+
+        .board {
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            width: 312px;
+            min-width: 312px;
+            max-height: calc(100% - 1rem);
+            background: var(--board-background);
+        }
+
+        .board-title {
+            padding: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .board-title h3 {
+            margin: 0;
+            display: inline;
+        }
+
+        .board button {
+            background: white;
+            border-radius: 5px;
+            padding: 5px 10px;
+        }
+
+        .board-action {
+            transition: 0.3s;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            font-size: 1.2rem;
+        }
+
+        .board-action:hover {
+            background: rgba(99, 99, 99, 0.2);
+        }
+
+        .list {
+            overflow-y: auto;
+            padding: 5px;
+            min-height: 56px;
+        }
+
+        .card {
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 0.8rem;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+            background: var(--card-background);
+            font-family: '돋음';
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            word-break: break-all;
+        }
+
+        .card>textarea,
+        .add-board-btn>textarea {
+            resize: none;
+            width: 100%;
+            overflow: hidden;
+            font-size: 1.5rem;
+            font-family: inherit;
+            background: var(--background);
+        }
+
+        textarea.text:onfocus {
+            background: blue;
+        }
+
+
+        .card-content {
+            color: #555;
+            color: var(--font-color);
+        }
+
+        .shadow {
+            background: rgba(0, 0, 0, 0.1);
+            border: none;
+            color: rgba(0, 0, 0, 0.2);
+        }
+
+        .shadow .card-title {
+            opacity: 0;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .center {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .trash {
+            display: none;
+            position: fixed;
+            background: rgba(0, 0, 0, 0.4);
+            width: 100%;
+            height: 5rem;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .trash::before {
+            content: '삭제는 여기로';
+            font-size: 1.3rem;
+            color: white;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Canban Board</h1>
+        <span class="dark-mode">
+            <span>다크모드</span>
+            <input type="checkbox" id="dark-mode"></input>
+        </span>
+
+    </header>
+    <div class="container"></div>
+    <div class="trash"></div>
+    <script>
+        const $ = q => document.querySelector(q);
+        const $$ = q => document.querySelectorAll(q);
+
+        Element.prototype.on = function (event, handler) {
+            this.addEventListener(event, handler);
+            return this;
+        }
+
+        NodeList.prototype.on = function (event, handler) {
+            this.forEach(n => n.addEventListener(event, handler));
+            return this;
+        }
+
+        const createElementString = str => {
+            const node = document.createElement('div');
+            node.innerHTML = str;
+            return node.children[0];
+        }
+
+        const renderBoard = boardId => `
+    <div class="board" draggable="true">
+        <div class="board-title">
+            <h3>${boardId}</h3>
+        </div>
+        <div class="list"></div>
+        <div class="board-action">
+            <div class="add-card-btn">+ 카드 추가하기</div>
+        </div>
+    </div>`;
+
+        const renderAddBoard = () => `
+    <div class="board add-board">
+         <div class="board-action">
+            <div class="add-board-btn">+ 보드 추가하기</div>
+        </div>
+    </div>`;
+
+        class BoardStore {
+            constructor(container) {
+                this.container = container;
+                this.dump = localStorage.getItem('canban-html') || ['To Do', 'Doing', 'Done'].map(renderBoard).join('') + renderAddBoard();
+                this.uiMode = localStorage.getItem('ui-mode') || 'default'
+                this.container.innerHTML = this.dump;
+            }
+
+            saveHTML() {
+                const dump = this.container.innerHTML.toString();
+                localStorage.setItem('canban-html', dump);
+            }
+
+            setUIMode(mode) {
+                localStorage.setItem('ui-mode', mode);
+            }
+        }
+
+        const container = $('.container');
+        const boardStore = new BoardStore(container);
+        const [ENTER, ESC] = [13, 27];
+        const trash = $('.trash');
+
+        let dragCard = null;
+        let dragBoard = null;
+
+        // Container Event
+        container.on('dragover', onContainerDragover)
+        container.on('mousewheel', onWheelScroll)
+
+        // Card Event
+        $$('.card').on('dragstart', onCardDragstart).on('dragend', onCardDragend);
+
+        // Board Event
+        $$('.board:not(.add-board)').on('dragstart', onBoardDragstart).on('dragend', onBoardDragend);
+
+        $$('.list').on('dragover', onCardListDragover);
+
+        $('.add-board-btn').on('click', onAddBoardBtnClick);
+
+        $$('.add-card-btn').on('click', onAddCardBtnClick);
+
+        // Trash Can Event
+        trash
+            .on('dragover', e => e.preventDefault())
+            .on('dragenter', () => trash.style.border = '3px dashed white')
+            .on('dragleave', () => trash.style.border = 'none')
+            .on('drop', (e) => (dragCard || dragBoard).remove());
+
+        // UI Setting Event
+        $('#dark-mode').on('change', onUIModeChange)
+        boardStore.uiMode === 'dark' && $('#dark-mode').click()
+
+        function resetAddBoardBtn() {
+            $('.add-board').remove();
+            container.appendChild(createElementString(renderAddBoard()));
+            $('.add-board-btn').on('click', onAddBoardBtnClick);
+        }
+
+        function onAddBoardBtnClick(e) {
+            this.innerHTML = `<textarea rows="1" placeholder="내용을 입력하세요"></textarea>`;
+            const textarea = this.querySelector('textarea');
+            textarea
+                .on('input', resizeTextarea)
+                .on('blur', resetAddBoardBtn)
+                .on('keydown', ({ keyCode }) => {
+
+                    if (keyCode === ESC) textarea.blur();
+                    if (keyCode !== ENTER || !textarea.value) return;
+                    if (textarea.value === '\n') return textarea.value = '';
+
+                    textarea.removeEventListener('blur', resetAddBoardBtn);
+
+                    const newBoard = createElementString(renderBoard(textarea.value));
+                    newBoard.on('dragstart', onBoardDragstart).on('dragend', onBoardDragend);
+                    newBoard.querySelector('.add-card-btn').on('click', onAddCardBtnClick);
+
+                    container.append(newBoard);
+                    resetAddBoardBtn();
+                    boardStore.saveHTML();
+                });
+
+            setTimeout(() => textarea.focus());
+        }
+
+        function resizeTextarea() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        }
+
+        function onAddCardBtnClick(e) {
+            const card = createElementString(`
+        <div class="card" draggable="true">
+            <textarea rows="1" placeholder="내용을 입력하세요"></textarea>
+        </div>`);
+            card.on('dragstart', onCardDragstart).on('dragend', onCardDragend);
+
+            const removeCard = () => card.remove();
+
+            const textarea = card.querySelector('textarea');
+            textarea
+                .on('input', resizeTextarea)
+                .on('blur', removeCard)
+                .on('keydown', ({ keyCode }) => {
+
+                    if (keyCode === ESC) textarea.blur();
+                    if (keyCode !== ENTER || !textarea.value) return;
+                    if (textarea.value === '\n') return textarea.value = '';
+
+                    textarea.removeEventListener('blur', removeCard);
+                    card.innerHTML = `<div class="card-title">${textarea.value}</div>`;
+                    boardStore.saveHTML();
+                    this.click();
+                });
+
+            const cardList = this.parentNode.parentNode.querySelector('.list');
+            cardList.appendChild(card);
+            setTimeout(() => textarea.focus());
+        }
+
+        function onBoardDragstart() {
+            trash.style.display = 'block';
+            dragBoard = this;
+        }
+
+        function onBoardDragend() {
+            dragBoard = null;
+            trash.style.display = 'none';
+            boardStore.saveHTML();
+        }
+
+        function onCardDragstart(e) {
+            dragCard = this;
+            setTimeout(() => {
+                this.classList.add('shadow');
+                trash.style.display = 'block';
+            });
+        }
+
+        function onCardDragend(e) {
+            dragCard = null;
+            this.classList.remove('shadow');
+            trash.style.display = 'none';
+            boardStore.saveHTML();
+        }
+
+        function onCardListDragover(e) {
+            e.preventDefault();
+
+            if (!dragCard || e.target === dragCard) return;
+
+            if (e.target.classList.contains('card')) {
+                this.insertBefore(dragCard, e.target)
+            } else if (e.target === this) {
+                this.appendChild(dragCard);
+            }
+        }
+
+        function onContainerDragover(e) {
+            e.preventDefault();
+
+            if (dragCard || !dragBoard) return;
+
+            if (e.target.classList.contains('board-title')) {
+                const sibling = [...this.children];
+                const targetBoard = e.target.parentNode;
+                const index = sibling.indexOf(dragBoard);
+                const targetIndex = sibling.indexOf(targetBoard);
+
+                const front = index > targetIndex ? dragBoard : targetBoard;
+                const back = index > targetIndex ? targetBoard : dragBoard;
+
+                this.insertBefore(front, back);
+            }
+        }
+
+        function onUIModeChange() {
+            const style = document.documentElement.style;
+            style.setProperty('--background', this.checked ? '#121212' : 'white');
+            style.setProperty('--border-color', this.checked ? 'white' : '#eee');
+            style.setProperty('--font-color', this.checked ? 'white' : 'black');
+            style.setProperty('--board-background', this.checked ? 'black' : '#eee');
+            style.setProperty('--card-background', this.checked ? '#222' : 'white');
+
+            boardStore.setUIMode(this.checked ? 'dark' : 'default');
+        }
+
+        function onWheelScroll(e) {
+            const delta = Math.max(-1, Math.min(1, e.deltaY));
+            if (e.target === container) {
+                this.scrollLeft += delta * 50;
+                e.preventDefault();
+            }
+        }
+
+    </script>
+</body>
+
+</html>

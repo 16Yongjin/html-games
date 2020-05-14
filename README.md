@@ -2,6 +2,22 @@
 
 Built during COVID-19 lockdown in my base.
 
+### 📃 One Single HTML File
+
+No CSS, Javascript Import. All embedded in One HTML File.
+
+### 🛒 No Dependency
+
+Full Vanilia Javascript
+
+### 🚚 Super Fast Code Shipping
+
+Accessing.. Loading Single HTML File... and Done!
+
+### 😈 I Gave up Maintenance
+
+No code split...
+
 ## Swipe Brick Breaker
 
 ![sbb](https://user-images.githubusercontent.com/22253556/81933996-2cf06900-9629-11ea-9b4e-31cee7502d29.png)

@@ -2,10 +2,6 @@
 
 Built during COVID-19 lockdown in my base.
 
-### ⚠ Support Only PC Chrome Browser
-
-No Mobile Support 🤔
-
 ### 📃 One Single HTML File
 
 No CSS, Javascript Import. All Embedded in One HTML File.
@@ -21,6 +17,10 @@ Full Vanilia Javascript
 ### 😈 No code split
 
 I Gave up Maintenance...
+
+### ⚠ Support Only PC Chrome Browser
+
+No Mobile Support 🤔
 
 ## [Brick Breaker](https://html-games.surge.sh/brick-breaker)
 

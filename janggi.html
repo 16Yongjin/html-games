@@ -335,8 +335,6 @@ class Unit {
         }
 
         else if (this.text === '車') {
-            const xGuard = x => 0 <= x && x <= 8
-            const yGuard = y => 0 <= y && y <= 9
 
             const paths = [
                 range(this.x - 1, 0).map(x => [x, this.y]).filter(isInBoard).takeWhile(canForward),

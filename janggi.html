@@ -293,7 +293,6 @@ class Unit {
         const isEnemy = ([x, y]) => table[y][x] && table[y][x].team !== this.team;
         const isEmptyOrEnemy = path => isEmptyPlace(path) || isEnemy(path);
         const toAbsoultePos = ([x, y]) => [this.x + x, this.y + y];
-        const isInEnemyPalaceCorner = isIn([[3, 7], [5, 7], [3, 9], [5, 9]])
 
         if (this.text === '兵') {
             const paths = [
@@ -316,26 +315,24 @@ class Unit {
         }
 
         else if (this.text === '漢' || this.text === '楚' || this.text === '士') {
-
             const isInPalace = this.team === 'red' ? 
                 ([x, y]) => 3 <= x && x <= 5 && 0 <= y && y <= 2 :
                 ([x, y]) => 3 <= x && x <= 5 && 7 <= y && y <= 9;
             
             const isPalaceSideMiddle = this.team === 'red' ?
-                (x, y) => (y === 1 && (x === 3 || x === 5)) || (x === 4 && (y === 0 || y === 2)) :
-                (x, y) => (y === 8 && (x === 3 || x === 5)) || (x === 4 && (y === 7 || y === 9)) 
+                ([x, y]) => (y === 1 && (x === 3 || x === 5)) || (x === 4 && (y === 0 || y === 2)) :
+                ([x, y]) => (y === 8 && (x === 3 || x === 5)) || (x === 4 && (y === 7 || y === 9)) 
 
             const paths = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]
                 .map(toAbsoultePos)
                 .filter(isInPalace)
-                .filter(([x, y]) => !isPalaceSideMiddle(this.x, this.y) || !isPalaceSideMiddle(x, y))
+                .filter(([x, y]) => !isPalaceSideMiddle(this.pos) || !isPalaceSideMiddle([x, y]))
                 .filter(canForward)
 
             return paths
         }
 
         else if (this.text === '車') {
-
             const paths = [
                 range(this.x - 1, 0).map(x => [x, this.y]).filter(isInBoard).takeWhile(canForward),
                 range(this.x + 1, 8).map(x => [x, this.y]).filter(isInBoard).takeWhile(canForward),
@@ -387,13 +384,7 @@ class Unit {
                 .map(([[x1, y1], [x2, y2]]) =>  [[x1, y1], [x1 + x2, y1 + y2]])
                 .map(ps => ps.map(toAbsoultePos))
                 .filter(ps => ps.every(isInBoard))
-                .filter(([[x1, y1], [x2, y2]]) => isEmptyOrEnemy([x2, y2]) &&
-                    isEmptyPlace([x1, y1]) && isEmptyOrEnemy([x2, y2]) &&
-                    (
-                        isEmptyPlace([x1 + x1 - this.x, y1 + y1 - this.y]) || 
-                        isEmptyPlace([x2 - x1 + this.x , y2 - y1 + this.y])
-                    )
-                )
+                .filter(([[x1, y1], [x2, y2]]) => isEmptyPlace([x1, y1]) && isEmptyOrEnemy([x2, y2]))
                 .map(i => i[1])
 
             return paths
@@ -406,16 +397,7 @@ class Unit {
                 .map(ps => ps.map(toAbsoultePos))
                 .filter(ps => ps.every(isInBoard))
                 .filter(([[x1, y1], [x2, y2], [x3, y3]]) =>
-                    isEmptyPlace([x1, y1]) && isEmptyPlace([x2, y2]) && isEmptyOrEnemy([x3, y3]) &&
-                    (
-                        isEmptyPlace([this.x + (x2 - x1), this.y + (y2 - y1)]) ||
-                        isEmptyPlace([x1 + (x1 - this.x), y1 + (y1 - this.y)])
-                    ) &&
-                    (
-                        isEmptyPlace([this.x + (x2 - x1) * 2, this.y + (y2 - y1) * 2]) ||
-                        isEmptyPlace([x2 + (x1 - this.x), y2 + (y1 - this.y)])
-                    )
-
+                    isEmptyPlace([x1, y1]) && isEmptyPlace([x2, y2]) && isEmptyOrEnemy([x3, y3])
                 )
                 .map(i => i[2])
 

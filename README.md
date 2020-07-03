@@ -38,7 +38,7 @@ No Mobile Support 🤔
 
 <img alt="tetris" src="https://user-images.githubusercontent.com/22253556/81934265-a5572a00-9629-11ea-9f8f-6d807f4f37cb.png" width="400px"/>
 
-## [Canban Board](https://html-games.surge.sh/canban)
+## [Kanban Board](https://html-games.surge.sh/kanban)
 
 <img alt="canban1" src="https://user-images.githubusercontent.com/22253556/81934493-fff08600-9629-11ea-92e1-eadd3c0f3393.png" width="400px"/>
 

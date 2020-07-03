@@ -42,9 +42,12 @@ No Mobile Support 🤔
 
 <img alt="canban1" src="https://user-images.githubusercontent.com/22253556/81934493-fff08600-9629-11ea-92e1-eadd3c0f3393.png" width="400px"/>
 
-
 <img alt="canban2" src="https://user-images.githubusercontent.com/22253556/81934425-e51e1180-9629-11ea-85d4-bff5f6e671c8.png" width="400px"/>
 
 ## [Maze Generator](https://html-games.surge.sh/maze)
 
 <img alt="maze" src="https://user-images.githubusercontent.com/22253556/82049751-dac74a80-96f1-11ea-96d8-f3fff2f002a9.png" width="400px"/>
+
+## [Stack!](https://html-games.surge.sh/stack)
+
+<img alt="stack" src="https://user-images.githubusercontent.com/22253556/86470747-07edbc00-bd77-11ea-9457-aee76662e62c.png" width="400px"/>

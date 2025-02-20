@@ -298,7 +298,9 @@
         state.oldCoords && removeFromWell(state.oldCoords, tempWell);
 
         //Set "state.playing" to true
-        state.playing = true
+        if (state.playing === false) {
+          state.playing = true
+        }
         
         if (dir === "rotate") {
           const flipTet = (t) => t[0].map((c, i) => t.map((t) => t[i]));

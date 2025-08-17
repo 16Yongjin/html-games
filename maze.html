@@ -229,23 +229,23 @@
       );
 
       return (e) => {
-        if (!e.key.startsWith("Arrow")) return;
+        const key = e.code.replace('Arrow', '').replace('Key', '').toLowerCase();
+        const allowedKeys = ['w', 'a', 's', 'd', 'up', 'left', 'right', 'down'];
+        if (!allowedKeys.includes(key)) return;
 
-        const key = e.key.slice(5).toLowerCase();
-
-        if (key === "w") {
+        if (key === "w" || key === 'up') {
           if (!inGrid(x, y - 1)) return;
           if (grid[y][x].walls.top) return;
           y -= 1;
-        } else if (key === "s") {
+        } else if (key === "s" || key === 'down') {
           if (!inGrid(x, y + 1)) return;
           if (grid[y][x].walls.bottom) return;
           y += 1;
-        } else if (key === "a") {
+        } else if (key === "a" || key === 'left') {
           if (!inGrid(x - 1, y)) return;
           if (grid[y][x].walls.left) return;
           x -= 1;
-        } else if (key === "d") {
+        } else if (key === "d" || key === 'right') {
           if (!inGrid(x + 1, y)) return;
           if (grid[y][x].walls.right) return;
           x += 1;

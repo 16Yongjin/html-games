@@ -428,16 +428,25 @@
         requestAnimationFrame(run);
       }
 
-      window.onkeypress = ({ key }) => {
-        if (key !== " ") return;
-
+      function progressGame() {
         state.start = true;
 
         if (state.over) return location.reload();
 
         const block = blocks[blocks.length - 1];
         block.stop();
+      }
+
+      window.onkeypress = ({ key }) => {
+        const SPACE_BAR = " ";
+        if (key !== SPACE_BAR) return;
+
+        progressGame();
       };
+
+      window.onclick = () => {
+        progressGame();
+      }
 
       setup();
 

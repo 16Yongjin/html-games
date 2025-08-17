@@ -257,6 +257,11 @@
 
         currentCell.innerHTML = "";
         currentCell = nextCell;
+        //Push a success alert when you complete the maze and size it up by 5
+        if (grid[y][x] === grid[n-1][n-1]) {
+				  alert('You have completed the maze! Press "OK" to close and create a new, slightly larger maze.');
+				  generateMaze(n+5);
+			  }
       };
     }
 

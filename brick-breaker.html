@@ -26,7 +26,7 @@
 
 <body>
   <canvas id="canvas" width="720" height="800"></canvas>
-  <button onclick="gameManager.downBalls()">공 내리기</button>
+  <button onclick="gameManager.downBalls()">Drop balls</button>
 
   <script>
     function randomInt(...args) {
@@ -38,7 +38,7 @@
       if (args.length === 2) {
         const [start, end] = args;
 
-        if (start > end) throw Error("시작값이 끝값보다 큼");
+        if (start > end) throw Error("The start value must not be greater than the end value.");
 
         return Math.ceil(Math.random() * (end - start)) + start;
       }
@@ -53,7 +53,7 @@
       if (args.length === 2) {
         const [start, end] = args;
 
-        if (start > end) throw Error("시작값이 끝값보다 큼");
+        if (start > end) throw Error("The start value must not be greater than the end value.");
 
         return Math.random() * (end - start) + start;
       }
@@ -584,9 +584,9 @@
       }
 
       showScore(state) {
-        ctx.fillText(`현재 점수: ${state.level}`, 30, uiOffsetY / 2 + 7);
+        ctx.fillText(`Score: ${state.level}`, 30, uiOffsetY / 2 + 7);
         ctx.fillText(
-          `최고 점수: ${state.bestLevel}`,
+          `Max Score: ${state.bestLevel}`,
           width - 150,
           uiOffsetY / 2 + 7
         );
@@ -604,7 +604,7 @@
       gameOver() {
         fillRect(0, height / 2 - 100, width, 200, "rgba(0, 0, 0, 0.3)");
         ctx.font = "40px Arial";
-        ctx.fillText("패배!", width / 2 - 40, height / 2 + 12);
+        ctx.fillText("Game Over!", width / 2 - 40, height / 2 + 12);
         ctx.font = "20px Arial";
       }
     }

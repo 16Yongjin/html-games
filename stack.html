@@ -39,7 +39,7 @@
         if (args.length === 2) {
           const [start, end] = args;
 
-          if (start > end) throw Error("시작값이 끝값보다 큼");
+          if (start > end) throw Error("The start value must not be greater than the end value.");
 
           return Math.ceil(Math.random() * (end - start)) + start;
         }
@@ -54,7 +54,7 @@
         if (args.length === 2) {
           const [start, end] = args;
 
-          if (start > end) throw Error("시작값이 끝값보다 큼");
+          if (start > end) throw Error("The start value must not be greater than the end value.");
 
           return Math.random() * (end - start) + start;
         }
@@ -335,8 +335,8 @@
           uiContext.clearRect(0, 0, width, height);
 
           if (!this.state.start) {
-            fillText("스페이스바로 시작하기", 300, 150, 40, "white");
-            fillText(`최고기록 ${getBestScore() - 1}`, 380, 300, 40, "white");
+            fillText("Click to Start", 400, 150, 40, "white");
+            fillText(`Best Score: ${getBestScore() - 1}`, 380, 300, 40, "white");
           } else {
             const levelLength = this.state.level.toString().length;
             const levelTextOffset = 15 * levelLength;
@@ -350,8 +350,8 @@
           }
 
           if (this.state.over) {
-            fillText("게임오버", 410, 250, 50, "white");
-            fillText("스페이스바로 다시 시작", 300, 350, 40, "white");
+            fillText("Game Over", 380, 250, 50, "white");
+            fillText("Click to Restart", 370, 350, 40, "white");
           }
         }
       }

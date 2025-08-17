@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <title>오목</title>
+  <title>Gomoku</title>
   <meta charset="utf-8" />
   <style>
     :root {
@@ -114,7 +114,7 @@
   </div>
   <div class="points center"></div>
   <div class="container center"></div>
-  <button id="undo">물리기</button>
+  <button id="undo">Undo</button>
   <script>
     const range = function (n, m) {
       if (arguments.length === 1)
@@ -191,7 +191,7 @@
       win(turn) {
         this.info.classList.remove("hide", "black", "white");
         this.info.classList.add(turnStr[turn]);
-        this.info.innerText = `${turn === BLACK ? "흑" : "백"} 승리`;
+        this.info.innerText = `${turn === BLACK ? "Black" : "White"} Win`;
         setTimeout(() => this.info.classList.add("hide"), 3000);
       }
     }

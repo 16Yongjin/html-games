@@ -20,7 +20,7 @@
 
   <body>
     <div>
-      <button onclick="state.playing = !state.playing">시작 / 정지</button>
+      <button onclick="state.playing = !state.playing">Start / Stop</button>
     </div>
     <canvas id="my-canvas"></canvas>
 
@@ -48,7 +48,7 @@
         newCoords: null,
         over: false,
         lock: false,
-        winOrLose: "진행 중",
+        winOrLose: "In Game",
       };
 
       const toBoardPos = ([x, y]) => [x + state.pos.x, y + state.pos.y];
@@ -168,29 +168,29 @@
         ctx.fillStyle = "black";
         ctx.font = "21px Arial";
 
-        ctx.fillText("레벨", 300, 100);
+        ctx.fillText("Level", 300, 100);
         ctx.strokeRect(300, 107, 161, 24);
         ctx.fillText(state.level, 310, 127);
 
-        ctx.fillText("점수", 300, 157);
+        ctx.fillText("Score", 300, 157);
         ctx.strokeRect(300, 165, 161, 24);
 
-        ctx.fillText("최고 점수", 300, 220);
+        ctx.fillText("Max Score", 300, 220);
         ctx.strokeRect(300, 225, 161, 24);
         updateScore(state.score);
 
-        ctx.fillText("승/패", 300, 271);
+        ctx.fillText("Win/Lose", 300, 271);
         ctx.fillText(state.winOrLose, 310, 311);
         ctx.strokeRect(300, 282, 161, 45);
 
-        ctx.fillText("조작법", 300, 350);
+        ctx.fillText("How to play", 300, 350);
         ctx.strokeRect(300, 358, 161, 112);
         ctx.font = "19px Arial";
-        ctx.fillText("← : 왼쪽으로", 310, 380);
-        ctx.fillText("→ : 오른쪽으로", 310, 400);
-        ctx.fillText(" ↓  : 아래로", 310, 420);
-        ctx.fillText(" ↑  : 오른쪽 돌림", 310, 440);
-        ctx.fillText("Space: 바로 내림 ", 310, 460);
+        ctx.fillText("← : Move Left", 310, 380);
+        ctx.fillText("→ : Move Right", 310, 400);
+        ctx.fillText(" ↓ : Down 1 Block", 310, 420);
+        ctx.fillText(" ↑  : Turn Right", 310, 440);
+        ctx.fillText("Space:  Drop", 310, 460);
 
         createTetromino();
         drawTetromino();
@@ -388,7 +388,7 @@
         ));
 
       const gameOver = () => {
-        state.winOrLose = "게임 오버";
+        state.winOrLose = "Game Over";
         state.over = true;
         ctx.fillStyle = "white";
         ctx.fillRect(310, 283, 140, 40);
@@ -400,7 +400,7 @@
         if (
           state.playing &&
           t - state.time > Math.max(fallingSpeed - state.level * 25, 150) &&
-          state.winOrLose !== "게임 오버"
+          state.winOrLose !== "Game Over"
         ) {
           state.time = t;
           canMove("down") && move("down");
